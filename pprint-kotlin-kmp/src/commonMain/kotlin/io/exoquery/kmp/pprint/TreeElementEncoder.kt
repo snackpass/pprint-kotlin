@@ -175,8 +175,12 @@ open class TreeElementEncoder private constructor (val pprinter: PPrinter<*>) : 
     value: T?
   ) {
     if (encodeElement(descriptor, index)) {
-      if (value == null) encodeNull()
-      else encodeSerializableElement(descriptor, index, serializer, value)
+      if (value == null) {
+        val elemName = descriptor.getElementName(index)
+        add(elemName) { treeifyLeaf(null, it) }
+      } else {
+        encodeSerializableElement(descriptor, index, serializer, value)
+      }
     }
   }
 }
